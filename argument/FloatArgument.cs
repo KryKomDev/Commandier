@@ -3,6 +3,8 @@
 // by KryKom 2024
 //
 
+using Kolors;
+
 namespace Commandier.argument;
 
 /// <summary>
@@ -46,7 +48,7 @@ public class FloatArgument : ArgumentType {
             value = output;
             return new FloatArgument((float)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }

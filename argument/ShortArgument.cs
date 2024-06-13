@@ -3,6 +3,7 @@
 // by KryKom 2024
 //
 
+using Kolors;
 using VoxelsCoreSharp.console;
 
 namespace Commandier.argument;
@@ -48,7 +49,7 @@ public class ShortArgument : ArgumentType {
             value = output;
             return new ShortArgument((short)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }
@@ -95,7 +96,7 @@ public class UShortArgument : ArgumentType {
             value = output;
             return new UShortArgument((ushort)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }

@@ -3,6 +3,8 @@
 // by KryKom 2024
 //
 
+using Kolors;
+
 namespace Commandier.argument;
 
 /// <summary>
@@ -44,7 +46,7 @@ public class LongArgument : ArgumentType {
             value = output;
             return new LongArgument((long)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }
@@ -91,7 +93,7 @@ public class ULongArgument : ArgumentType {
             value = output;
             return new ULongArgument((ulong)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }

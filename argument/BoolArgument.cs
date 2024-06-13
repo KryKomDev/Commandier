@@ -28,7 +28,7 @@ public class BoolArgument : ArgumentType {
             value = bool.Parse(raw);
             return new BoolArgument((bool)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }

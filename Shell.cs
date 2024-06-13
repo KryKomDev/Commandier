@@ -3,6 +3,8 @@
 // by KryKom 2024
 //
 
+using Kolors;
+
 namespace Commandier;
 
 public class Shell {

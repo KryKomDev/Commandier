@@ -3,6 +3,8 @@
 // by KryKom 2024
 //
 
+using Kolors;
+
 namespace Commandier.argument;
 
 /// <summary>
@@ -44,7 +46,7 @@ public class IntArgument : ArgumentType {
             value = output; 
             return new IntArgument((int)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }
@@ -91,7 +93,7 @@ public class UIntArgument : ArgumentType {
             value = output;
             return new UIntArgument((uint)value, description);
         }
-        catch (Exception e) {
+        catch (Exception) {
             return null;
         }
     }
