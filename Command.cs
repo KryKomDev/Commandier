@@ -75,7 +75,7 @@ public class CommandGroup {
     public void addCommand(Command command) {
         if (command.name != name) {
             Debug.error($"Could not register command \'{command.name}{command.argumentsToString()}\' into the \'{name}\' command group! \n" +
-                        $"           Supplied command does not have the same name as the group.");
+                        $"           Supplied command does not have the same name as the group.", true);
             return;
         }
         
@@ -89,7 +89,7 @@ public class CommandGroup {
 
             if (command.arguments.Length == 0 && c.arguments.Length == 0) {
                 Debug.error($"Could not register command \'{command.name}{command.argumentsToString()}\' into the \'{name}\' command group! \n" +
-                            $"           Supplied command already exists.");
+                            $"           Supplied command already exists.", true);
                 return;
             }
             
@@ -109,12 +109,12 @@ public class CommandGroup {
 
             if (match) {
                 Debug.error($"Could not register command \'{command.name}{command.argumentsToString()}\' into the \'{name}\' command group! \n" +
-                            $"           Command with the same arguments already exists.");
+                            $"           Command with the same arguments already exists.", true);
                 return;
             }
         }
         
-        // Debug.info($"Successfully added new command \'{command.name}{command.argumentsToString()}\' into the \'{name}\' command group.");
+        Debug.info($"Successfully added new command \'{command.name}{command.argumentsToString()}\' into the \'{name}\' command group.");
         commands.Add(command);
     }
 }

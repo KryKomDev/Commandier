@@ -12,6 +12,11 @@ public class Shell {
     public static Shell SHELL = new Shell();
     
     private bool running = false;
+    private string prompt;
+    
+    public Shell(string prompt = ">") {
+        this.prompt = prompt;
+    }
 
     public void start() {
         
@@ -25,7 +30,7 @@ public class Shell {
     }
 
     private void parse() {
-        ConsoleColors.printColored($"\n[{DateTime.Now:HH:mm:ss}]: \x1B[1m$\x1B[22m ", (int)Colors.GRAY_5);
+        ConsoleColors.printColored($"\n\x1B[1m{prompt}\x1B[22m ", (int)Colors.GRAY_5);
         string? raw = Console.ReadLine();
         
         if (string.IsNullOrEmpty(raw)) {
@@ -65,7 +70,7 @@ public class Shell {
         }
 
         if (runnable == null) {
-            Debug.error("No available command with this syntax.");
+            Debug.error("No available command with this syntax.", true);
             return;
         }
 

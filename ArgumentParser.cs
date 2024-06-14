@@ -3,6 +3,7 @@
 // by KryKom 2024
 //
 
+using System.Text.RegularExpressions;
 using Commandier.argument;
 using Kolors;
 using VoxelsCoreSharp.console.command;
@@ -39,6 +40,19 @@ public static class ArgumentParser {
                         s += raw[j];
                     }
                 }
+            } else if (raw[i] == '*') {
+                
+                for (int j = i + 1; j < raw.Length; j++) {
+                    if (raw[j] == '*') {
+                        s = Variable.getVariable(s);
+                        args.Add(s);
+                        s = "";
+                        i = j + 1;
+                    }
+                    else {
+                        s += raw[j];
+                    }
+                }
             }
             else if (raw[i] == ' ') {
                 args.Add(s); 
@@ -47,6 +61,10 @@ public static class ArgumentParser {
             else {
                 s += raw[i];
             }
+        }
+
+        foreach (string ss in args) {
+            Debug.warn(ss, true);
         }
         
         return args.ToArray();
