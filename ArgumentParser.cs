@@ -34,7 +34,7 @@ public static class ArgumentParser {
                     if (raw[j] == '"') {
                         args.Add(s);
                         s = "";
-                        i = j;
+                        i = j + 1;
                     }
                     else {
                         s += raw[j];
@@ -44,7 +44,7 @@ public static class ArgumentParser {
                 
                 for (int j = i + 1; j < raw.Length; j++) {
                     if (raw[j] == '*') {
-                        s = Variable.getVariable(s);
+                        s = $"\"{Variable.getVariable(s)}\"";
                         args.Add(s);
                         s = "";
                         i = j + 1;
@@ -63,9 +63,15 @@ public static class ArgumentParser {
             }
         }
 
-        foreach (string ss in args) {
-            Debug.warn(ss, true);
+        for (int i = 0; i < args.Count; i++) {
+            if (args[i] == string.Empty) {
+                args.RemoveAt(i);
+            }
         }
+        
+        // foreach (var ss in args) {
+        //     Debug.warn(ss, true);
+        // }
         
         return args.ToArray();
     }
@@ -77,6 +83,8 @@ public static class ArgumentParser {
     /// <param name="arguments">argument types</param>
     /// <returns>parsed arguments</returns>
     public static object[]? parse(string raw, ArgumentType[] arguments, string name) {
+        
+        // Debug.info(raw);
         
         string[] args = separate(raw);
         

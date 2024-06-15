@@ -63,6 +63,10 @@ public static class CommandRegistry {
         registerCommand(VARIABLE_ADD);
         registerCommand(VARIABLE_SET);
         registerCommand(VARIABLE_LIST);
+        registerCommand(DEBUG_LEVEL);
+        registerCommand(DEBUG_INFO);
+        registerCommand(DEBUG_WARN);
+        registerCommand(DEBUG_ERROR);
     }
     
     
@@ -135,4 +139,20 @@ public static class CommandRegistry {
     public static readonly Command VARIABLE_REMOVE = new Command("var", [new FixedArgument("delete"), new StringArgument("name")], args => {
         Variable.removeVariable(args[1].ToString());
     }, "removes a variable");
+
+    public static readonly Command DEBUG_LEVEL = new("debug", [new FixedArgument("level"), new IntArgument(0, 3, "level")], args => {
+        Debug.debugLevel = (int)args[1];
+    });
+
+    public static readonly Command DEBUG_INFO = new("debug", [new FixedArgument("info"), new StringArgument("message")], args => {
+        Debug.info(args[1].ToString(), true);
+    }, "prints a info message into the console");
+    
+    public static readonly Command DEBUG_WARN = new("debug", [new FixedArgument("warn"), new StringArgument("message")], args => {
+        Debug.warn(args[1].ToString(), true);
+    }, "prints a warning message into the console");
+    
+    public static readonly Command DEBUG_ERROR = new("debug", [new FixedArgument("error"), new StringArgument("message")], args => {
+        Debug.error(args[1].ToString(), true);
+    }, "prints a error message into the console");
 }

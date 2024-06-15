@@ -75,9 +75,17 @@ public class Shell {
         }
 
         string args = "";
+        int startI = 0;
+        
+        for (int i = 0; i < raw.Length; i++) {
+            if (raw[i] == ' ') {
+                startI = i + 1;
+                break;
+            }
+        }
 
-        for (int i = 1; i < rawArgs.Length; i++) {
-            args += $"{rawArgs[i]} ";
+        for (int i = startI; i < raw.Length; i++) {
+            args += "" + raw[i];
         }
         
         runnable.run(args);

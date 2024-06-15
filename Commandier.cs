@@ -1,4 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿//
+// Commandier 
+// by KryKom 2024
+//
+
 using Kolors;
 
 namespace Commandier;
