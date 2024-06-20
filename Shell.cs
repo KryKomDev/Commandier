@@ -11,6 +11,16 @@ public class Shell {
 
     public static Shell SHELL = new Shell();
     
+    /// <summary>
+    /// Length = 5, everything else will be ignored <br/>
+    /// [0] -> normal text <br/>
+    /// [1] -> error <br/>
+    /// [2] -> warning <br/>
+    /// [3] -> info <br/>
+    /// [4] -> highlight
+    /// </summary>
+    public static ColorPalette PALETTE = new ColorPalette("f8ffe5-ef476f-ffc43d-06d6a0-1b9aaa");
+    
     private bool running = false;
     private string prompt;
     
@@ -30,7 +40,7 @@ public class Shell {
     }
 
     private void parse() {
-        ConsoleColors.printColored($"\n\x1B[1m{prompt}\x1B[22m ", (int)Colors.GRAY_5);
+        ConsoleColors.printColored($"\n\x1B[1m{prompt}\x1B[22m ", PALETTE.colors[4]);
         string? raw = Console.ReadLine();
         
         if (string.IsNullOrEmpty(raw)) {

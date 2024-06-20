@@ -6,8 +6,6 @@
 using System.Text.RegularExpressions;
 using Commandier.argument;
 using Kolors;
-using VoxelsCoreSharp.console.command;
-using VoxelsCoreSharp.console.command.argument;
 
 namespace Commandier;
 

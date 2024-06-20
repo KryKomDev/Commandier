@@ -3,9 +3,7 @@
 // by KryKom 2024
 //
 
-using Commandier.argument;
-
-namespace VoxelsCoreSharp.console.command.argument;
+namespace Commandier.argument;
 
 /// <summary>
 /// string argument type

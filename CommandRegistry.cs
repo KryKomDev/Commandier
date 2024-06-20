@@ -5,7 +5,6 @@
 
 using Commandier.argument;
 using Kolors;
-using VoxelsCoreSharp.console.command.argument;
 
 namespace Commandier;
 
@@ -17,9 +16,9 @@ public static class CommandRegistry {
     private static List<CommandGroup> COMMAND_REGISTRY = new();
 
     /// <summary>
-    /// whether the default commandier commands are registred
+    /// whether the default commandier commands are registered
     /// </summary>
-    private static bool defaultsRegistred = false;
+    private static bool defaultsRegistered = false;
 
     /// <summary>
     /// returns the entire command register
@@ -52,13 +51,16 @@ public static class CommandRegistry {
     /// </summary>
     internal static void registerDefault() {
         
-        if(defaultsRegistred) return;
+        if(defaultsRegistered) return;
         
         registerCommand(EXIT);
         registerCommand(HELP);
         registerCommand(HELP_COMMAND);
         registerCommand(HELP_LIST);
         registerCommand(COLORS);
+        registerCommand(COLORS_SET);
+        registerCommand(COLORS_SET_EXPLICIT);
+        registerCommand(COLORS_LIST_ALL);
         registerCommand(VARIABLE_REMOVE);
         registerCommand(VARIABLE_ADD);
         registerCommand(VARIABLE_SET);
@@ -71,22 +73,27 @@ public static class CommandRegistry {
     
     
     // --- COMMAND CODE ---
-    
+   
+    // help commands
+
     public static readonly Command HELP = new Command("help", [], (object[] args) => {
         
-        Console.WriteLine("Welcome to Commandier.\n" +
-                          "syntax of every command is <command_name> <args...>\n" +
-                          "for more help for specific command type 'help <command_name>'\n" +
-                          "to exit type 'exit'");
+        ConsoleColors.printlnColored("Welcome to Commandier.\n" +
+                          "  Syntax of every command is <command_name> <args...>\n" +
+                          "  For more help for specific command type 'help command <command_name>'\n" +
+                          "  To exit type 'exit'", Shell.PALETTE.colors[0]);
         
     }, "helps you understand the commands and the shell");
 
-    public static readonly Command HELP_LIST = new Command("help", [new FixedArgument("list")], (object[] args) => {
+    public static readonly Command HELP_LIST = new Command("help", [new FixedArgument("list")], args => {
+        ConsoleColors.printlnColored("Available commands:", Shell.PALETTE.colors[0]);
         foreach (CommandGroup cg in COMMAND_REGISTRY) {
-            foreach (Command c in cg.commands) {
-                ConsoleColors.printColored($"{c.name}", ColorPalette.BASE.colors[2]);
-                ConsoleColors.printlnColored($"{c.argumentsToString()}", ColorPalette.GRAY_9.colors[3]);
-            }
+            
+            ConsoleColors.printlnColored($"  {cg.name}", Shell.PALETTE.colors[4]);
+            
+            // foreach (Command c in cg.commands) {
+            //     ConsoleColors.printlnColored($"{c.argumentsToString()}", ColorPalette.GRAY_9.colors[3]);
+            // }
         }
     });
 
@@ -96,11 +103,11 @@ public static class CommandRegistry {
                 continue;
             }
 
-            Console.WriteLine($"Usage for \'{args[1]}\':");
+            ConsoleColors.printlnColored($"Usages for \'{args[1]}\':", Shell.PALETTE.colors[0]);
             
             foreach (Command c in cg.commands) {
-                ConsoleColors.printColored($"   {c.name}", ColorPalette.BASE.colors[2]);
-                ConsoleColors.printColored($"{c.argumentsToString()}", ColorPalette.GRAY_9.colors[3]);
+                ConsoleColors.printColored($"   {c.name}", Shell.PALETTE.colors[4]);
+                ConsoleColors.printColored($"{c.argumentsToString()}", Shell.PALETTE.colors[0]);
                 ConsoleColors.printlnColored($"  - {c.description}", ColorPalette.GRAY_9.colors[5]);
             }
             
@@ -111,18 +118,49 @@ public static class CommandRegistry {
 
     }, "gives help to supplied command");
 
+    // colors commands
+
     public static readonly Command COLORS = new("colors", [], args => {
-        ColorPalette.COLORS.printPalette();
+        Shell.PALETTE.printPalette();
         ColorPalette.GRAY_9.printPalette();
-    }, "prints 2 used colors palettes");
+    }, "prints used colors palettes");
+
+    public static readonly Command COLORS_SET = new("colors", [new FixedArgument("set"), new StringArgument("palette_name")], args => {
+        Shell.PALETTE = ColorPalette.getPalette((string)args[1]);
+        Debug.infoColor = Shell.PALETTE.colors[3];
+        Debug.warnColor = Shell.PALETTE.colors[2];
+        Debug.errorColor = Shell.PALETTE.colors[1];
+    }, "sets the main color palette");
+
+    public static readonly Command COLORS_SET_EXPLICIT = new("colors", [new FixedArgument("set"), new FixedArgument("at"), new IntArgument(0, 4, "palette_index"), new StringArgument("hex_code")], args => {
+
+        try {
+            Shell.PALETTE.colors[(int)args[2]] = int.Parse((string)args[3], System.Globalization.NumberStyles.HexNumber);
+            Debug.infoColor = Shell.PALETTE.colors[3];
+            Debug.warnColor = Shell.PALETTE.colors[2];
+            Debug.errorColor = Shell.PALETTE.colors[1];
+        }
+        catch (FormatException e) {
+            Debug.error("Hex code is in invalid format!");
+        }
+        
+    }, "sets a color in the main color palette");
+
+    public static readonly Command COLORS_LIST_ALL = new("colors", [new FixedArgument("list")], args => {
+        ColorPalette.printAllPalettes();
+    }, "prints all palettes");
     
+    // exit command
+
     public static readonly Command EXIT = new Command("exit", [], args => {
         Shell.SHELL.stop();
     }, "exits the shell");
 
+    // variable commands
+
     public static readonly Command VARIABLE_LIST = new Command("var", [new FixedArgument("list")], args => {
         foreach (Variable v in Variable.variables) {
-            ConsoleColors.printColored($"{v.name}: ", ColorPalette.BASE.colors[2]);
+            ConsoleColors.printColored($"{v.name}: ", Shell.PALETTE.colors[0]);
             ConsoleColors.printlnColored($"{v.value}", ColorPalette.GRAY_9.colors[3]);
         }
     }, "lists all available variables");
@@ -139,6 +177,8 @@ public static class CommandRegistry {
     public static readonly Command VARIABLE_REMOVE = new Command("var", [new FixedArgument("delete"), new StringArgument("name")], args => {
         Variable.removeVariable(args[1].ToString());
     }, "removes a variable");
+
+    // debug commands
 
     public static readonly Command DEBUG_LEVEL = new("debug", [new FixedArgument("level"), new IntArgument(0, 3, "level")], args => {
         Debug.debugLevel = (int)args[1];

@@ -4,11 +4,8 @@
 //
 
 using Kolors;
-using VoxelsCoreSharp.console;
 
 namespace Commandier.argument;
-
-using global::Commandier;
 
 /// <summary>
 /// short argument type
