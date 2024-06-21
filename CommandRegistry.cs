@@ -154,18 +154,18 @@ public static class CommandRegistry {
     // neofetch
 
     public static readonly Command NEOFETCH = new("neofetch", [], args => {
-        ConsoleColors.printComplexColored("~        *#########*,          \x1B[1m\x1B[4m!C O M M A N D I E R\x1B[0m~ by KryKom\n" + 
-                                              "~      #@@/-------\\@@#         !version:~ 24w25c\n" + 
-                                             $"~    /%@(  (##*\\    (@%\\       !commands total:~ {COMMAND_REGISTRY.Count}\n" + 
-                                             $"~   #@%/   @&&&@@(   \\%@#      !color palettes total:~ {ColorPalette.palettes.Count}\n" + 
-                                              "~  #@#*    @%|  ,(@,  *#@#     !------~\n" + 
-                                              "~   #@%\\   @&%%&&#   /%@#      !main palette:       ", 
+        ConsoleColors.printComplexColored("~       /#############\\,         \x1B[1m\x1B[4m!C O M M A N D I E R\x1B[0m~ by KryKom\n" + 
+                                              "~      #@@/^^^^^^^^^\\@@#         !version:~ 24w25c\n" + 
+                                             $"~    /%@(   (##*\\     (@%\\       !commands total:~ {COMMAND_REGISTRY.Count}\n" + 
+                                             $"~   #@%/    @&&&@@(    \\%@#      !color palettes total:~ {ColorPalette.palettes.Count}\n" + 
+                                              "~  #@#*     @%|  ,(@,   *#@#     ------\n" + 
+                                              "~   #@%\\    @&%%&&#    /%@#      !main palette:       ", 
             [("~", Shell.PALETTE.colors[0]), ("!", Shell.PALETTE.colors[4])]);
         Shell.PALETTE.printPalette();
-        ConsoleColors.printComplexColored("~    \\&&(  (##/^    (&&/       !grayscale palette:  ", [("~", Shell.PALETTE.colors[0]), ("!", Shell.PALETTE.colors[4])]);
+        ConsoleColors.printComplexColored("~    \\&&(   (##/^     (&&/       !grayscale palette:  ", [("~", Shell.PALETTE.colors[0]), ("!", Shell.PALETTE.colors[4])]);
         ColorPalette.GRAY_9.printPalette();
-        ConsoleColors.printlnColored("     *#@@\\-------/@@#*        \n" + 
-                                     "        \\#########/           \n", Shell.PALETTE.colors[0]);
+        ConsoleColors.printlnColored("     *#@@\\_________/@@#*        \n" + 
+                                     "       \\#############/          \n", Shell.PALETTE.colors[0]);
     });
     
     // exit command
