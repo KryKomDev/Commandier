@@ -13,12 +13,21 @@ public class Command {
     public readonly ArgumentType[] arguments;
     private readonly Action<object[]> code;
     public readonly string description;
+    public bool ee { get; private set; } = false;
 
     public Command(string name, ArgumentType[] arguments, Action<object[]> code, string description = "this does not have a description...") {
         this.name = name;
         this.arguments = arguments;
         this.code = code;
         this.description = description;
+    }
+
+    internal Command(string name, ArgumentType[] arguments, Action<object[]> code, string description = "this does not have a description...", bool ee = false) {
+        this.name = name;
+        this.arguments = arguments;
+        this.code = code;
+        this.description = description;
+        this.ee = ee;
     }
 
     public void run(string raw) {

@@ -3,6 +3,7 @@
 // by KryKom 2024
 //
 
+using System.Drawing;
 using Commandier.argument;
 using Kolors;
 
@@ -70,6 +71,11 @@ public static class CommandRegistry {
         registerCommand(DEBUG_WARN);
         registerCommand(DEBUG_ERROR);
         registerCommand(NEOFETCH);
+        registerCommand(CLOCK);
+        registerCommand(CLEAR);
+        registerCommand(CLOCK_A);
+        registerCommand(CLOCK_D);
+        registerCommand(CLOCK_E);
     }
     
     
@@ -77,7 +83,7 @@ public static class CommandRegistry {
    
     // help commands
 
-    public static readonly Command HELP = new Command("help", [], (object[] args) => {
+    public static readonly Command HELP = new("help", [], (object[] args) => {
         
         ConsoleColors.printlnColored("Welcome to Commandier.\n" +
                           "  Syntax of every command is <command_name> <args...>\n" +
@@ -86,7 +92,7 @@ public static class CommandRegistry {
         
     }, "helps you understand the commands and the shell");
 
-    public static readonly Command HELP_LIST = new Command("help", [new FixedArgument("list")], args => {
+    public static readonly Command HELP_LIST = new("help", [new FixedArgument("list")], args => {
         ConsoleColors.printlnColored("Available commands:", Shell.PALETTE.colors[0]);
         foreach (CommandGroup cg in COMMAND_REGISTRY) {
             
@@ -96,7 +102,7 @@ public static class CommandRegistry {
             //     ConsoleColors.printlnColored($"{c.argumentsToString()}", ColorPalette.GRAY_9.colors[3]);
             // }
         }
-    });
+    }, "lists all available commands");
 
     public static readonly Command HELP_COMMAND = new Command("help", [new FixedArgument("command"), new StringArgument("command_name")], (object[] args) => {
         foreach (CommandGroup cg in COMMAND_REGISTRY) {
@@ -107,9 +113,11 @@ public static class CommandRegistry {
             ConsoleColors.printlnColored($"Usages for \'{args[1]}\':", Shell.PALETTE.colors[0]);
             
             foreach (Command c in cg.commands) {
-                ConsoleColors.printColored($"   {c.name}", Shell.PALETTE.colors[4]);
-                ConsoleColors.printColored($"{c.argumentsToString()}", Shell.PALETTE.colors[0]);
-                ConsoleColors.printlnColored($"  - {c.description}", ColorPalette.GRAY_9.colors[5]);
+                if (c.ee != true) {
+                    ConsoleColors.printColored($"   {c.name}", Shell.PALETTE.colors[4]);
+                    ConsoleColors.printColored($"{c.argumentsToString()}", Shell.PALETTE.colors[0]);
+                    ConsoleColors.printlnColored($"  - {c.description}", ColorPalette.GRAY_9.colors[5]);
+                }
             }
             
             return;
@@ -155,7 +163,7 @@ public static class CommandRegistry {
 
     public static readonly Command NEOFETCH = new("neofetch", [], args => {
         ConsoleColors.printComplexColored("~       /#############\\,         \x1B[1m\x1B[4m!C O M M A N D I E R\x1B[0m~ by KryKom\n" + 
-                                              "~      #@@/^^^^^^^^^\\@@#         !version:~ 24w25c\n" + 
+                                              "~      #@@/^^^^^^^^^\\@@#         !version:~ 24w26b\n" + 
                                              $"~    /%@(   (##*\\     (@%\\       !commands total:~ {COMMAND_REGISTRY.Count}\n" + 
                                              $"~   #@%/    @&&&@@(    \\%@#      !color palettes total:~ {ColorPalette.palettes.Count}\n" + 
                                               "~  #@#*     @%|  ,(@,   *#@#     ------\n" + 
@@ -166,7 +174,31 @@ public static class CommandRegistry {
         ColorPalette.GRAY_9.printPalette();
         ConsoleColors.printlnColored("     *#@@\\_________/@@#*        \n" + 
                                      "       \\#############/          \n", Shell.PALETTE.colors[0]);
-    });
+    }, "writes a fancy logo with info");
+    
+    // clock command
+
+    public static readonly Command CLOCK = new("clock", [], args => {
+        DigitalClock.clock(Shell.PALETTE.colors[4]);
+    }, "starts a digital clock screensaver");
+
+    public static readonly Command CLOCK_A = new("clock", [new FixedArgument("analogue")], args => {
+        AnalogueClock.clock(Shell.PALETTE);
+    }, "starts an analogue clock screensaver");
+    
+    public static readonly Command CLOCK_D = new("clock", [new FixedArgument("digital")], args => {
+        DigitalClock.clock(Shell.PALETTE.colors[4]);
+    }, "starts an analogue clock screensaver");
+
+    public static readonly Command CLOCK_E = new("clock", [new FixedArgument("rainbow")], args => {
+        
+        void action() {
+            (int r, int g, int b) c = ColorFormat.ColorFromHSV(DateTime.Now.Second * 12, 1d, 1d);
+            DigitalClock.COLOR = (c.r << 16) + (c.g << 8) + c.b;
+        }
+
+        DigitalClock.clock(0xff0000, action);
+    }, "starts a digital rainbow clock screensaver", true);
     
     // exit command
 
@@ -200,7 +232,7 @@ public static class CommandRegistry {
 
     public static readonly Command DEBUG_LEVEL = new("debug", [new FixedArgument("level"), new IntArgument(0, 3, "level")], args => {
         Debug.debugLevel = (int)args[1];
-    });
+    }, "sets the debug message level");
 
     public static readonly Command DEBUG_INFO = new("debug", [new FixedArgument("info"), new StringArgument("message")], args => {
         Debug.info(args[1].ToString(), true);
@@ -213,4 +245,10 @@ public static class CommandRegistry {
     public static readonly Command DEBUG_ERROR = new("debug", [new FixedArgument("error"), new StringArgument("message")], args => {
         Debug.error(args[1].ToString(), true);
     }, "prints a error message into the console");
+    
+    // clear command
+
+    public static readonly Command CLEAR = new("clear", [], args => {
+        Console.Clear();
+    }, "clears the console history");
 }
