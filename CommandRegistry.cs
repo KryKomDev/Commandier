@@ -3,7 +3,6 @@
 // by KryKom 2024
 //
 
-using System.Drawing;
 using Commandier.argument;
 using Kolors;
 
@@ -83,7 +82,7 @@ public static class CommandRegistry {
    
     // help commands
 
-    public static readonly Command HELP = new("help", [], (object[] args) => {
+    public static readonly Command HELP = new("help", [], args => {
         
         ConsoleColors.printlnColored("Welcome to Commandier.\n" +
                           "  Syntax of every command is <command_name> <args...>\n" +
@@ -104,7 +103,7 @@ public static class CommandRegistry {
         }
     }, "lists all available commands");
 
-    public static readonly Command HELP_COMMAND = new Command("help", [new FixedArgument("command"), new StringArgument("command_name")], (object[] args) => {
+    public static readonly Command HELP_COMMAND = new("help", [new FixedArgument("command"), new StringArgument("command_name")], args => {
         foreach (CommandGroup cg in COMMAND_REGISTRY) {
             if (cg.name != (string)args[1]) {
                 continue;
@@ -149,7 +148,7 @@ public static class CommandRegistry {
             Debug.warnColor = Shell.PALETTE.colors[2];
             Debug.errorColor = Shell.PALETTE.colors[1];
         }
-        catch (FormatException e) {
+        catch (FormatException) {
             Debug.error("Hex code is in invalid format!");
         }
         
@@ -166,7 +165,7 @@ public static class CommandRegistry {
                                               "~      #@@/^^^^^^^^^\\@@#         !version:~ 24w26b\n" + 
                                              $"~    /%@(   (##*\\     (@%\\       !commands total:~ {COMMAND_REGISTRY.Count}\n" + 
                                              $"~   #@%/    @&&&@@(    \\%@#      !color palettes total:~ {ColorPalette.palettes.Count}\n" + 
-                                              "~  #@#*     @%|  ,(@,   *#@#     ------\n" + 
+                                              "~  #@#*     @%|  ,(@,   *#@#     ─────────\n" + 
                                               "~   #@%\\    @&%%&&#    /%@#      !main palette:       ", 
             [("~", Shell.PALETTE.colors[0]), ("!", Shell.PALETTE.colors[4])]);
         Shell.PALETTE.printPalette();
@@ -208,24 +207,24 @@ public static class CommandRegistry {
 
     // variable commands
 
-    public static readonly Command VARIABLE_LIST = new Command("var", [new FixedArgument("list")], args => {
+    public static readonly Command VARIABLE_LIST = new("var", [new FixedArgument("list")], args => {
         foreach (Variable v in Variable.variables) {
             ConsoleColors.printColored($"{v.name}: ", Shell.PALETTE.colors[0]);
             ConsoleColors.printlnColored($"{v.value}", ColorPalette.GRAY_9.colors[3]);
         }
     }, "lists all available variables");
 
-    public static readonly Command VARIABLE_ADD = new Command("var", [new FixedArgument("add"), new StringArgument("name"), new StringArgument("value")], args => {
-        Variable v = new Variable(args[1].ToString(), args[2].ToString()); 
+    public static readonly Command VARIABLE_ADD = new("var", [new FixedArgument("add"), new StringArgument("name"), new StringArgument("value")], args => {
+        Variable v = new Variable(args[1].ToString()!, args[2].ToString()!); 
         Variable.addVariable(v);
     }, "creates a new variable");
     
-    public static readonly Command VARIABLE_SET = new Command("var", [new FixedArgument("set"), new StringArgument("name"), new StringArgument("value")], args => {
-        Variable.setVariable(args[1].ToString(), args[2].ToString());
+    public static readonly Command VARIABLE_SET = new("var", [new FixedArgument("set"), new StringArgument("name"), new StringArgument("value")], args => {
+        Variable.setVariable(args[1].ToString()!, args[2].ToString()!);
     }, "sets an existing variable");
 
-    public static readonly Command VARIABLE_REMOVE = new Command("var", [new FixedArgument("delete"), new StringArgument("name")], args => {
-        Variable.removeVariable(args[1].ToString());
+    public static readonly Command VARIABLE_REMOVE = new("var", [new FixedArgument("delete"), new StringArgument("name")], args => {
+        Variable.removeVariable(args[1].ToString()!);
     }, "removes a variable");
 
     // debug commands
@@ -235,15 +234,15 @@ public static class CommandRegistry {
     }, "sets the debug message level");
 
     public static readonly Command DEBUG_INFO = new("debug", [new FixedArgument("info"), new StringArgument("message")], args => {
-        Debug.info(args[1].ToString(), true);
+        Debug.info(args[1].ToString() ?? string.Empty, true);
     }, "prints a info message into the console");
     
     public static readonly Command DEBUG_WARN = new("debug", [new FixedArgument("warn"), new StringArgument("message")], args => {
-        Debug.warn(args[1].ToString(), true);
+        Debug.warn(args[1].ToString() ?? string.Empty, true);
     }, "prints a warning message into the console");
     
     public static readonly Command DEBUG_ERROR = new("debug", [new FixedArgument("error"), new StringArgument("message")], args => {
-        Debug.error(args[1].ToString(), true);
+        Debug.error(args[1].ToString() ?? string.Empty, true);
     }, "prints a error message into the console");
     
     // clear command
