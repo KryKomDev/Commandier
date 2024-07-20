@@ -3,6 +3,7 @@
 // by KryKom 2024
 //
 
+using System.Globalization;
 using Kolors;
 
 namespace Commandier;
@@ -20,6 +21,14 @@ public class Shell {
     /// [4] -> highlight
     /// </summary>
     public static ColorPalette PALETTE = new ColorPalette("f8ffe5-ef476f-ffc43d-06d6a0-1b9aaa");
+
+    public static Action onStart = delegate {
+        CultureInfo myCI = new CultureInfo("cz-CZ");
+        Calendar myCal = myCI.Calendar;
+        CalendarWeekRule myCWR = myCI.DateTimeFormat.CalendarWeekRule;
+        DayOfWeek myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
+        ConsoleColors.printlnColored($"\n\x1B[1mCommandier [{DateTime.Today:yy}w{myCal.GetWeekOfYear(DateTime.Now, myCWR, myFirstDOW)}d] by KryKom\n(c) All rights probably not reserved :D", PALETTE.colors[4]); // TODO change version letter here
+    }; 
     
     private bool running = false;
     private string prompt;
@@ -31,6 +40,8 @@ public class Shell {
     public void start() {
         
         CommandRegistry.registerDefault();
+
+        onStart();
         
         running = true;
         

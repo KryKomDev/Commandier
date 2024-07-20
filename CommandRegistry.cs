@@ -3,6 +3,7 @@
 // by KryKom 2024
 //
 
+using System.Globalization;
 using Commandier.argument;
 using Kolors;
 
@@ -76,7 +77,6 @@ public static class CommandRegistry {
         registerCommand(CLOCK_D);
         registerCommand(CLOCK_E);
     }
-    
     
     // --- COMMAND CODE ---
    
@@ -161,8 +161,13 @@ public static class CommandRegistry {
     // neofetch
 
     public static readonly Command NEOFETCH = new("neofetch", [], args => {
+        CultureInfo myCI = new CultureInfo("cz-CZ");
+        Calendar myCal = myCI.Calendar;
+        CalendarWeekRule myCWR = myCI.DateTimeFormat.CalendarWeekRule;
+        DayOfWeek myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
+        
         ConsoleColors.printComplexColored("~       /#############\\,         \x1B[1m\x1B[4m!C O M M A N D I E R\x1B[0m~ by KryKom\n" + 
-                                              "~      #@@/^^^^^^^^^\\@@#         !version:~ 24w26b\n" + 
+                                             $"~      #@@/^^^^^^^^^\\@@#         !version:~ {DateTime.Today:yy}w{myCal.GetWeekOfYear(DateTime.Now, myCWR, myFirstDOW)}d\n" + // TODO change version letter here 
                                              $"~    /%@(   (##*\\     (@%\\       !commands total:~ {COMMAND_REGISTRY.Count}\n" + 
                                              $"~   #@%/    @&&&@@(    \\%@#      !color palettes total:~ {ColorPalette.palettes.Count}\n" + 
                                               "~  #@#*     @%|  ,(@,   *#@#     ─────────\n" + 
@@ -230,7 +235,12 @@ public static class CommandRegistry {
     // debug commands
 
     public static readonly Command DEBUG_LEVEL = new("debug", [new FixedArgument("level"), new IntArgument(0, 3, "level")], args => {
-        Debug.debugLevel = (int)args[1];
+        switch (args[1]) {
+            case 0: Debug.debugLevel = Debug.DebugLevel.NOTHING; break;
+            case 1: Debug.debugLevel = Debug.DebugLevel.ONLY_ERRORS; break;
+            case 2: Debug.debugLevel = Debug.DebugLevel.ERRORS_WARNS; break;
+            case 3: Debug.debugLevel = Debug.DebugLevel.ALL; break;
+        }
     }, "sets the debug message level");
 
     public static readonly Command DEBUG_INFO = new("debug", [new FixedArgument("info"), new StringArgument("message")], args => {
